@@ -3,10 +3,11 @@ import { MdOutlineClose } from "react-icons/md";
 import Button from "./Button";
 import { FormEvent, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { ITodo, addTodo, updateTodo } from "../slices/todoSlice";
+import { addTodo, updateTodo } from "../slices/todoSlice";
 import { v4 as uuid } from "uuid";
 import { toast } from "react-toastify";
 import { AnimatePresence, motion } from "framer-motion";
+import { ITodo } from "../types/type";
 
 const dropIn = {
   hidden: { opacity: 0, transform: "scale(0.9)" },
@@ -35,57 +36,54 @@ interface Props {
 
 const TodoModal = ({ type, modalOpen, setModalOpen, todo }: Props) => {
   const [title, setTitle] = useState("");
-  const [status, setStatus] = useState("");
-  // const dispatch = useDispatch();
+  const [status, setStatus] = useState(true);
+  const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   if (type === "update" && todo) {
-  //     setTitle(todo.title);
-  //     if (todo.completed) {
-  //       setStatus("completed");
-  //     } else {
-  //       setStatus("incompleted");
-  //     }
-  //   } else {
-  //     setTitle("");
-  //     setStatus("");
-  //   }
-  // }, [type, todo, modalOpen]);
+  useEffect(() => {
+    if (type === "update" && todo) {
+      setTitle(todo.title);
+      if (todo.completed) {
+        setStatus(true);
+      } else {
+        setStatus(false);
+      }
+    } else {
+      setTitle("");
+      setStatus(false);
+    }
+  }, [type, todo, modalOpen]);
 
-  // const handleSubmit = (e: FormEvent) => {
-  //   e.preventDefault();
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
 
-  //   if (title === "") {
-  //     toast.error("Please enter a title");
-  //     return;
-  //   }
-  //   if (title && status) {
-  //     if (type === "add") {
-  //       dispatch(
-  //         addTodo({
-  //           id: uuid(),
-  //           title,
-  //           status,
-  //           time: new Date().toLocaleDateString(),
-  //         })
-  //       );
-  //       toast.success("Task Added Successfully");
-  //     }
-  //     if (type === "update") {
-  //       if (!todo) return;
-  //       if (
-  //         todo.title !== title ||
-  //         (todo.completed === false && status !== "incompleted")
-  //       ) {
-  //         dispatch(updateTodo({ ...todo, title, status }));
-  //       } else {
-  //         toast.error("No Changes Made");
-  //         return;
-  //       }
-  //     }
-  //     setModalOpen(false);
-  //   }
-  // };
+    if (title === "") {
+      toast.error("Please enter a title");
+      return;
+    }
+    if (title && status) {
+      if (type === "add") {
+        dispatch(
+          addTodo({
+            id: uuid(),
+            title,
+            status,
+            // time: new Date().toLocaleDateString(),
+          })
+        );
+        toast.success("Task Added Successfully");
+      }
+      if (type === "update") {
+        if (!todo) return;
+        if (todo.title !== title || todo.completed !== status) {
+          dispatch(updateTodo({ ...todo, title, status }));
+        } else {
+          toast.error("No Changes Made");
+          return;
+        }
+      }
+      setModalOpen(false);
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -117,8 +115,7 @@ const TodoModal = ({ type, modalOpen, setModalOpen, todo }: Props) => {
             >
               <MdOutlineClose />
             </motion.div>
-            {/* <form className={styles.form} onSubmit={(e) => handleSubmit(e)}> */}
-            <form className={styles.form} onSubmit={() => {}}>
+            <form className={styles.form} onSubmit={(e) => handleSubmit(e)}>
               <h1 className={styles.formTitle}>
                 {type === "update" ? "Update" : "Add"} Task
               </h1>
@@ -136,7 +133,7 @@ const TodoModal = ({ type, modalOpen, setModalOpen, todo }: Props) => {
                 <select
                   name="status"
                   id="status"
-                  value={status}
+                  value={status ? "complete" : "incomplete"}
                   onChange={(e) => setStatus(e.target.value)}
                 >
                   <option value="incomplete">Incomplete</option>

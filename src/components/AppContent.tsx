@@ -28,7 +28,7 @@ const child = {
 
 const AppContent = () => {
   const todoList = useSelector((state: RootState) => state.todo.todoList);
-  const dispatch = useDispatch();
+  const dispatch: any = useDispatch();
 
   useEffect(() => {
     //FIXME:
@@ -38,21 +38,16 @@ const AppContent = () => {
   const filterStatus = useSelector(
     (state: RootState) => state.todo.filterStatus
   );
-  const todoListLocal = window.localStorage.getItem("todoList");
-  let filteredTodoList = [];
 
-  if (todoListLocal) {
-    const parsedTodoListLocal = [...JSON.parse(todoListLocal), ...todoList];
-    filteredTodoList = parsedTodoListLocal.filter((item) => {
-      if (filterStatus === "all") {
-        return true;
-      } else if (filterStatus === "incomplete") {
-        return !item.completed;
-      } else {
-        return item.completed;
-      }
-    });
-  }
+  const filteredTodoList = todoList.filter((item) => {
+    if (filterStatus === "all") {
+      return true;
+    } else if (filterStatus === "incomplete") {
+      return !item.completed;
+    } else {
+      return item.completed;
+    }
+  });
 
   return (
     <motion.div

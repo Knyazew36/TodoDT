@@ -1,14 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-export interface ITodo {
-  userId: number;
-  id: number;
-  title: string;
-  completed: boolean;
-}
-interface Initial {
-  todoList: ITodo[];
-  filterStatus: string;
-}
+import { ITodo, todoSLiceInitial } from "../types/type";
 
 export const fetchTodos = createAsyncThunk("/todos", async () => {
   const response = await fetch("https://jsonplaceholder.typicode.com/todos");
@@ -16,7 +7,7 @@ export const fetchTodos = createAsyncThunk("/todos", async () => {
   return data;
 });
 
-const initialState: Initial = {
+const initialState: todoSLiceInitial = {
   todoList: [],
   filterStatus: "all",
 };
@@ -42,30 +33,20 @@ export const todoSlice = createSlice({
       }
     },
     deleteTodo: (state, action) => {
-      if (todoList) {
-        const todoListArr = JSON.parse(todoList);
-        todoListArr.forEach((todo: ITodo, index: number) => {
-          if (todo.id === action.payload) {
-            todoListArr.splice(index, 1);
-          }
-        });
-        window.localStorage.setItem("todoList", JSON.stringify(todoListArr));
-        state.todoList = todoListArr;
-      }
+      // const todoListArr = JSON.parse(todoList);
+      // todoListArr.forEach((todo: ITodo, index: number) => {
+      //   if (todo.id === action.payload) {
+      //     todoListArr.splice(index, 1);
+      //   }
+      // });
     },
     updateTodo: (state, action) => {
-      //FIXME:
-      // if (todoList) {
-      //   const todoListArr = JSON.parse(todoList);
-      //   todoListArr.forEach((todo: ITodo) => {
-      //     if (todo.id === action.payload.id) {
-      //       todo.title = action.payload.title;
-      //       todo.completed = action.payload.status;
-      //     }
-      //   });
-      //   window.localStorage.setItem("todoList", JSON.stringify(todoListArr));
-      //   state.todoList = todoListArr;
-      // }
+      // state.todoList.forEach((todo: ITodo) => {
+      //   if (todo.id === action.payload.id) {
+      //     todo.title = action.payload.title;
+      //     todo.completed = action.payload.status;
+      //   }
+      // });
     },
     updateFilterStatus: (state, action) => {
       state.filterStatus = action.payload;
