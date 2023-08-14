@@ -6,6 +6,7 @@ import { fetchTodos } from "../slices/todoSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { v4 as uuid } from "uuid";
+import { ITodo } from "../types/type";
 
 const container = {
   hidden: { opacity: 1 },
@@ -29,17 +30,16 @@ const child = {
 const AppContent = () => {
   const todoList = useSelector((state: RootState) => state.todo.todoList);
   const dispatch: any = useDispatch();
-
-  useEffect(() => {
-    //FIXME:
-    dispatch(fetchTodos());
-  }, []);
-
   const filterStatus = useSelector(
     (state: RootState) => state.todo.filterStatus
   );
 
-  const filteredTodoList = todoList.filter((item) => {
+  useEffect(() => {
+    dispatch(fetchTodos());
+  }, []);
+
+
+  const filteredTodoList = todoList.filter((item: ITodo) => {
     if (filterStatus === "all") {
       return true;
     } else if (filterStatus === "incomplete") {

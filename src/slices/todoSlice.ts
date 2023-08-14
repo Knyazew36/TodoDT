@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "../../node_modules/axios/index";
 import { ITodo, todoSLiceInitial } from "../types/type";
 
 export const fetchTodos = createAsyncThunk("/todos", async () => {
-  const response = await fetch("https://jsonplaceholder.typicode.com/todos");
-  const data = response.json();
+  const {data} = await axios.get("https://jsonplaceholder.typicode.com/todos");
   return data;
 });
 
